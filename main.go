@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/hex"
 	"fmt"
+
 	"github.com/libsv/go-bk/wif"
 	"github.com/libsv/go-bt/v2"
 	"github.com/libsv/go-bt/v2/bscript"
@@ -10,10 +12,10 @@ import (
 )
 
 func main() {
-	privKey := wif.DecodeWif("")
+	privKey, _ := wif.DecodeWIF("")
 	changeAddress, _ := bscript.NewAddressFromPublicKey(privKey.PrivKey.PubKey(), true)
-	destPrivKey := wif.DecodeWif("")
-	address, _ := bscript.NewAddressFromPublicKey(desPrivKey.PrivKey.PubKey(), true)
+	destPrivKey, _ := wif.DecodeWIF("")
+	address, _ := bscript.NewAddressFromPublicKey(destPrivKey.PrivKey.PubKey(), true)
 	var sats uint64
 	var vOut uint32
 
@@ -38,7 +40,7 @@ func main() {
 		Satoshis:      sats,
 	}
 
-	rawTxString, err := transaction.CreateTransaction(utxo, privKey, address, changeAddress, amount)
+	rawTxString, err := transaction.CreateTransaction(utxo, privKey.PrivKey, address.AddressString, changeAddress.AddressString, amount)
 	if err != nil {
 		fmt.Println(err)
 	}

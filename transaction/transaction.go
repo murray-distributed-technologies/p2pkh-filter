@@ -3,20 +3,22 @@ package transaction
 import (
 	"bytes"
 	"context"
+
 	"github.com/libsv/go-bk/bec"
 	"github.com/libsv/go-bk/crypto"
 	"github.com/libsv/go-bt/v2"
+	"github.com/libsv/go-bt/v2/bscript"
 	"github.com/libsv/go-bt/v2/sighash"
 	btunlocker "github.com/libsv/go-bt/v2/unlocker"
-	"github.com/murray-distributed-technologes/p2pkh-filter/script"
 	pushtxpreimage "github.com/murray-distributed-technologies/go-pushtx/preimage"
+	"github.com/murray-distributed-technologies/p2pkh-filter/script"
 )
 
 func CreateTransaction(utxo *bt.UTXO, privKey *bec.PrivateKey, address, changeAddress string, satoshis uint64) (string, error) {
 	var err error
 	tx := bt.NewTx()
 
-	if err = tx.FromUTXOS(utxo); err != nil {
+	if err = tx.FromUTXOs(utxo); err != nil {
 		return "", err
 	}
 	if tx, err = AddOutput(tx, address, satoshis); err != nil {
@@ -114,7 +116,7 @@ func (u *UnlockTx) UnlockingScript(ctx context.Context, tx *bt.Tx, params bt.Unl
 	pubKey := u.PrivateKey.PubKey().SerialiseCompressed()
 	signature := sig.Serialise()
 
-	uscript, err := script.NewUnlockingScript(pubKey, preimage, signature, payams.SigHashFlags)
+	uscript, err := script.NewUnlockingScript(pubKey, preimage, signature, params.SigHashFlags)
 	if err != nil {
 		return nil, err
 	}
