@@ -12,16 +12,16 @@ func AppendFilter(s *bscript.Script) (*bscript.Script, error) {
 	s.AppendOpcodes(bscript.Op1, bscript.OpSPLIT, bscript.OpSWAP, bscript.OpSPLIT, bscript.OpNIP)
 
 	// push x bytes to split after OP_PUSH_TX
-	if err = s.AppendPushDataHexString(""); err != nil {
+	if err = s.AppendPushDataHexString("a000"); err != nil {
 		return nil, err
 	}
-	s.AppendOpcodes(bscript.OpSPLIT)
+	s.AppendOpcodes(bscript.OpBIN2NUM, bscript.OpSPLIT)
 
 	// strip pubkeyHash
-	s.AppendOpcodes(bscript.Op2, bscript.OpSPLIT, bscript.Op1, bscript.OpSPLIT, bscript.OpNIP)
+	s.AppendOpcodes(bscript.Op1, bscript.OpSPLIT, bscript.OpSWAP, bscript.OpSPLIT, bscript.OpNIP)
 
 	// build template
-	s.AppendOpcodes(bscript.OpCAT, bscript.OpCAT)
+	s.AppendOpcodes(bscript.OpCAT)
 
 	//take hash and check
 	s.AppendOpcodes(bscript.OpSHA1, bscript.OpEQUALVERIFY)
@@ -33,7 +33,7 @@ func NewLockingScript(address string) (*bscript.Script, error) {
 	s := &bscript.Script{}
 
 	//add hash of script template
-	if err = s.AppendPushDataHexString(""); err != nil {
+	if err = s.AppendPushDataHexString("a8797cec77752e185853d8c004a538356ec97583"); err != nil {
 		return nil, err
 	}
 
